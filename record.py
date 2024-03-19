@@ -194,11 +194,11 @@ def main():
             print("数据已保存，程序退出")
             break
         elif option == 1:
-            score = int(input("请输入分数："))
+            obj = int(input("请输入分数："))
             rating = float(input("请输入命中率："))
             react_time = int(input("请输入反应时间："))
             target_number = int(input("请输入靶数："))
-            add_record(data, score, rating, react_time, target_number)
+            add_record(data, obj, rating, react_time, target_number)
             is_data_changed = True
             print("记录已添加")
         elif option == 2:
@@ -248,11 +248,11 @@ def main():
                         f"{index}. {time} 得分：{record['score']} 命中率:{record['rating']} 反应时间：{record['react_time']} 命中目标：{record['target_number']}")
                 index_to_modify = int(input("请输入要修改的记录序号："))
                 if 1 <= index_to_modify <= len(records):
-                    score = int(input("请输入新的分数："))
+                    obj = int(input("请输入新的分数："))
                     rating = float(input("请输入新的命中率："))
                     react_time = int(input("请输入新的反应时间："))
                     target_number = int(input("请输入新的靶数："))
-                    modify_record(data, date, list(records.keys())[index_to_modify - 1], score, rating, react_time,
+                    modify_record(data, date, list(records.keys())[index_to_modify - 1], obj, rating, react_time,
                                   target_number)
                     print("记录已修改")
                     is_data_changed = True
@@ -351,35 +351,46 @@ def main():
                 print("得分：%.2f 命中率：%.2f%% 反应时间：%.2f 命中目标：%.2f" % (
                     average_score, average_rating * 100, average_react_time, average_target_number))
         elif option == 6:
+            sub_option = int(input("请输入绘制单位（0-得分，1-命中率，2-反应时间，3-命中目标）："))
+            option2key = {
+                0: ['score', '得分'],
+                1: ['rating', '命中率'],
+                2: ['react_time', '反应时间'],
+                3: ['target_number', '命中目标'],
+            }
+            key_eng = option2key[sub_option][0]
+            key_chi = option2key[sub_option][1]
             timestamps = []
-            scores = []
+            objs = []
 
             for year in sorted(data['records'].keys()):
                 for month in sorted(data['records'][year].keys()):
                     for day in sorted(data['records'][year][month].keys()):
                         for time, time_data in data['records'][year][month][day].items():
                             timestamps.append(f'{year}-{month}-{day} {time}')
-                            scores.append(time_data['score'])
+                            objs.append(time_data[key_eng])
 
             # 取最后50条记录
             timestamps_last_50 = timestamps[-50:]
-            scores_last_50 = scores[-50:]
+            objs_last_50 = objs[-50:]
+            average_obj = sum(objs_last_50) / len(objs_last_50)
 
             # 创建折线图
             plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置字体为SimHei
-            plt.plot(timestamps_last_50, scores_last_50, marker='o')
-            plt.title('最近50场得分折线图')
+            plt.plot(timestamps_last_50, objs_last_50, marker='o')
+            plt.axhline(average_obj, color='r', linestyle='--', label=f'平均{key_chi}：{average_obj:.4f}')  # 添加平均值水平线
+            plt.title(f'最近50场{key_chi}折线图')
             plt.xlabel('时间')
-            plt.ylabel('得分')
+            plt.ylabel(f'{key_chi}')
             plt.xticks(rotation=45)
             plt.grid(True)
+            plt.legend()  # 显示图例
             plt.tight_layout()
 
-            for i, (timestamp, score) in enumerate(zip(timestamps_last_50, scores_last_50)):
-                plt.text(timestamp, score, str(score), ha='right', va='bottom', rotation=45, fontsize=8)
+            for i, (timestamp, obj) in enumerate(zip(timestamps_last_50, objs_last_50)):
+                plt.text(timestamp, obj, str(obj), ha='right', va='bottom', rotation=45, fontsize=8)
 
-            # 保存图为 overview.png
-            plt.savefig('overview.png')
+            plt.savefig(f'最近50场{key_chi}折线图.png')
 
             # 显示图
             plt.show()
