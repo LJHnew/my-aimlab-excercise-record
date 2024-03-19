@@ -1,3 +1,70 @@
 {
-    "records": {}
+    "records": {
+        "2024": {
+            "03": {
+                "19": {
+                    "19:26:13": {
+                        "score": 47379,
+                        "rating": 0.788,
+                        "react_time": 890,
+                        "target_number": 73
+                    },
+                    "19:26:41": {
+                        "score": 62634,
+                        "rating": 0.888,
+                        "react_time": 748,
+                        "target_number": 85
+                    },
+                    "19:27:08": {
+                        "score": 54978,
+                        "rating": 0.813,
+                        "react_time": 801,
+                        "target_number": 80
+                    },
+                    "19:27:39": {
+                        "score": 55153,
+                        "rating": 0.804,
+                        "react_time": 781,
+                        "target_number": 80
+                    },
+                    "19:27:58": {
+                        "score": 50404,
+                        "rating": 0.755,
+                        "react_time": 836,
+                        "target_number": 77
+                    },
+                    "19:30:31": {
+                        "score": 54626,
+                        "rating": 0.796,
+                        "react_time": 789,
+                        "target_number": 80
+                    },
+                    "19:41:33": {
+                        "score": 44244,
+                        "rating": 0.714,
+                        "react_time": 910,
+                        "target_number": 71
+                    },
+                    "19:41:56": {
+                        "score": 57862,
+                        "rating": 0.811,
+                        "react_time": 762,
+                        "target_number": 83
+                    },
+                    "19:43:31": {
+                        "score": 47962,
+                        "rating": 0.764,
+                        "react_time": 877,
+                        "target_number": 74
+                    },
+                    "19:45:00": {
+                        "score": 51152,
+                        "rating": 0.805,
+                        "react_time": 842,
+                        "target_number": 76
+                    }
+                }
+            }
+        }
+    }
 }

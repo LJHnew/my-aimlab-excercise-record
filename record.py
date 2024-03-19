@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-
+import matplotlib.pyplot as plt
 
 # 读取 JSON 文件
 def load_json(filename):
@@ -178,9 +178,16 @@ def main():
         print("3. 修改记录")
         print("4. 查找记录")
         print("5. 记录计算")
+        print("6. 绘制折线图")
         print("0. 保存并退出")
 
-        option = int(input("请输入操作选项："))
+        try:
+            option = int(input("请输入操作选项："))
+        except ValueError:
+            print('==================')
+            print('输入错误，请重新输入！')
+            print('==================')
+            continue
 
         if option == 0:
             save_json(filename, data, is_data_changed)
@@ -188,7 +195,7 @@ def main():
             break
         elif option == 1:
             score = int(input("请输入分数："))
-            rating = float(input("请输入评级："))
+            rating = float(input("请输入命中率："))
             react_time = int(input("请输入反应时间："))
             target_number = int(input("请输入靶数："))
             add_record(data, score, rating, react_time, target_number)
@@ -242,7 +249,7 @@ def main():
                 index_to_modify = int(input("请输入要修改的记录序号："))
                 if 1 <= index_to_modify <= len(records):
                     score = int(input("请输入新的分数："))
-                    rating = float(input("请输入新的评级："))
+                    rating = float(input("请输入新的命中率："))
                     react_time = int(input("请输入新的反应时间："))
                     target_number = int(input("请输入新的靶数："))
                     modify_record(data, date, list(records.keys())[index_to_modify - 1], score, rating, react_time,
@@ -343,6 +350,39 @@ def main():
                                                                                                              day=day)
                 print("得分：%.2f 命中率：%.2f%% 反应时间：%.2f 命中目标：%.2f" % (
                     average_score, average_rating * 100, average_react_time, average_target_number))
+        elif option == 6:
+            timestamps = []
+            scores = []
+
+            for year in sorted(data['records'].keys()):
+                for month in sorted(data['records'][year].keys()):
+                    for day in sorted(data['records'][year][month].keys()):
+                        for time, time_data in data['records'][year][month][day].items():
+                            timestamps.append(f'{year}-{month}-{day} {time}')
+                            scores.append(time_data['score'])
+
+            # 取最后50条记录
+            timestamps_last_50 = timestamps[-50:]
+            scores_last_50 = scores[-50:]
+
+            # 创建折线图
+            plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置字体为SimHei
+            plt.plot(timestamps_last_50, scores_last_50, marker='o')
+            plt.title('最近50场得分折线图')
+            plt.xlabel('时间')
+            plt.ylabel('得分')
+            plt.xticks(rotation=45)
+            plt.grid(True)
+            plt.tight_layout()
+
+            for i, (timestamp, score) in enumerate(zip(timestamps_last_50, scores_last_50)):
+                plt.text(timestamp, score, str(score), ha='right', va='bottom', rotation=45, fontsize=8)
+
+            # 保存图为 overview.png
+            plt.savefig('overview.png')
+
+            # 显示图
+            plt.show()
 
 
 if __name__ == "__main__":

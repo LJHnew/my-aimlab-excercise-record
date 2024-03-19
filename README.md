@@ -1,6 +1,9 @@
-写一个python文件，它可以实现操作六目标射击.json的功能：
-json分为三部分：第一部分是records部分，records中包括year，month，day部分，
-year是一个数字，记录年份，month是一个数字，记录月份，day是一个字典，它的键是一个数字，表示第几天，值是一个字典，这里称为最小基本记录，
+# my-aimlab-exercise-record
+该项目能够操作六目标射击.json，从而记录六目标射击数据，分析csgo枪法长进。
+## 数据结构
+json分为三部分：
+第一部分是records部分，records中包括year，month，day部分，
+year的键是一个数字，记录年份，month的键是一个数字，记录月份，day是一个字典，它的键是一个数字，表示第几天，值是一个字典，这里称为最小基本记录，
 它的键是形如时：分：秒的字符串，值是一个字典，包括score,rating,react_time,target_number。records部分的年月日都是按照升序排列的。
 操作一：增加记录
 输入1表示增加记录，紧接着输入score,rating,react_time,target_number，程序能够根据当前时间添加记录，如果该记录对应的年、月、日不存在需要创建新的
