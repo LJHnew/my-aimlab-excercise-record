@@ -1,4 +1,3 @@
-你
 写一个python文件，它可以实现操作六目标射击.json的功能：
 json分为三部分：第一部分是records部分，records中包括year，month，day部分，
 year是一个数字，记录年份，month是一个数字，记录月份，day是一个字典，它的键是一个数字，表示第几天，值是一个字典，这里称为最小基本记录，
