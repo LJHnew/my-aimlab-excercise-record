@@ -1,81 +1,10 @@
-import json
+from operate_json import *
+from operate_record import *
 from datetime import datetime
 import matplotlib.pyplot as plt
-
-# 读取 JSON 文件
-def load_json(filename):
-    with open(filename, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-    return data
+import colorama
 
 
-# 保存 JSON 文件
-def save_json(filename, data, is_data_changed):
-    if is_data_changed:
-        while True:
-            user_input = input("数据已更改，是否确认保存？ (y/n): ").strip().lower()
-            if user_input in ['y', 'n']:
-                if user_input == 'y':
-                    with open(filename, 'w', encoding='utf-8') as file:
-                        json.dump(data, file, indent=4, ensure_ascii=False)
-                break
-            else:
-                print("无效的输入，请输入 'y' 或 'n'。")
-    else:
-        with open(filename, 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
-
-
-# 增加记录
-def add_record(data, score, rating, react_time, target_number):
-    now = datetime.now()
-    year = str(now.year)
-    month = '{:02d}'.format(now.month)
-    day = '{:02d}'.format(now.day)
-    hour_minute_second = now.strftime('%H:%M:%S')
-
-    if year not in data['records']:
-        data['records'][year] = {}
-    if month not in data['records'][year]:
-        data['records'][year][month] = {}
-    if day not in data['records'][year][month]:
-        data['records'][year][month][day] = {}
-
-    data['records'][year][month][day][hour_minute_second] = {
-        'score': score,
-        'rating': rating,
-        'react_time': react_time,
-        'target_number': target_number
-    }
-
-
-
-
-# 修改记录
-def modify_record(data, date, index, score, rating, react_time, target_number):
-    year, month, day = date.split('-')
-    if year in data['records'] and month in data['records'][year] and day in data['records'][year][month]:
-        records = data['records'][year][month][day]
-        if index in records:
-            records[index] = {
-                'score': score,
-                'rating': rating,
-                'react_time': react_time,
-                'target_number': target_number
-            }
-        else:
-            print("输入的序号无效")
-    else:
-        print("该日期没有记录")
-
-
-# 查找记录
-def find_records(data, date):
-    if date in data['records']:
-        return data['records'][date]
-
-
-# 记录计算
 # 计算平均值
 def calculate_average(data, option, year=None, month=None, day=None):
     if option == 0:
@@ -183,10 +112,12 @@ def main():
 
         try:
             option = int(input("请输入操作选项："))
+            if option < 0 or option > 6:
+                raise ValueError
         except ValueError:
-            print('==================')
+            print(colorama.Fore.RED + '==================')
             print('输入错误，请重新输入！')
-            print('==================')
+            print('==================' + colorama.Fore.RESET)
             continue
 
         if option == 0:
@@ -374,10 +305,17 @@ def main():
             timestamps_last_50 = timestamps[-50:]
             objs_last_50 = objs[-50:]
             average_obj = sum(objs_last_50) / len(objs_last_50)
+            today = datetime.now().date()
 
             # 创建折线图
             plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置字体为SimHei
             plt.plot(timestamps_last_50, objs_last_50, marker='o')
+            for timestamp, obj in zip(timestamps_last_50, objs_last_50):
+                datestamp = datetime.strptime(timestamp.split()[0], '%Y-%m-%d')
+                if datestamp.date() == today:
+                    plt.plot(timestamp, obj, marker='o', color='red')  # 如果是今天的记录，绘制红色点
+                else:
+                    plt.plot(timestamp, obj, marker='o', color='blue')  # 如果是以往的记录，绘制蓝色点
             plt.axhline(average_obj, color='r', linestyle='--', label=f'平均{key_chi}：{average_obj:.4f}')  # 添加平均值水平线
             plt.title(f'最近50场{key_chi}折线图')
             plt.xlabel('时间')
@@ -397,4 +335,5 @@ def main():
 
 
 if __name__ == "__main__":
+    colorama.init()
     main()
